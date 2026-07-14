@@ -1,0 +1,28 @@
+import { BrowserRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { MuiThemeProvider } from '@/contexts/MuiThemeProvider';
+import { AppRoutes } from '@/routes';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <MuiThemeProvider>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </MuiThemeProvider>
+    </QueryClientProvider>
+  );
+}
+
+export default App;
+

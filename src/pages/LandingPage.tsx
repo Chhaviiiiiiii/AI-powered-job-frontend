@@ -18,9 +18,11 @@ import { Card } from '@/components/common/Card';
 import { Container } from '@/components/common/Container';
 import { Section } from '@/components/common/Section';
 import { Badge } from '@/components/common/Badge';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
+  const { isAuthenticated, openAuthModal } = useAuth();
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
 
@@ -156,7 +158,7 @@ export const LandingPage: React.FC = () => {
               variant="primary" 
               size="lg" 
               rightIcon={<ArrowRight className="w-5 h-5" />}
-              onClick={() => navigate('/profile/setup')}
+              onClick={() => isAuthenticated ? navigate('/dashboard') : openAuthModal('signup')}
             >
               Get Started Free
             </Button>
@@ -385,7 +387,7 @@ export const LandingPage: React.FC = () => {
                   <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-emerald-500" /> Live Interview Pipeline Analytics</li>
                 </ul>
               </div>
-              <Button variant="primary" className="w-full" onClick={() => navigate('/profile/setup')}>
+              <Button variant="primary" className="w-full" onClick={() => isAuthenticated ? navigate('/dashboard') : openAuthModal('signup')}>
                 Upgrade to Pro
               </Button>
             </Card>
@@ -445,7 +447,7 @@ export const LandingPage: React.FC = () => {
               <Button 
                 variant="primary" 
                 size="lg"
-                onClick={() => navigate('/profile/setup')}
+                onClick={() => isAuthenticated ? navigate('/dashboard') : openAuthModal('signup')}
               >
                 Launch Your AI Pilot Now
               </Button>

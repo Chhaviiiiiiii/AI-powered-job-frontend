@@ -1,11 +1,23 @@
-import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Outlet, Navigate } from 'react-router-dom';
 import { Sidebar } from '@/components/common/Sidebar';
 import { Header } from '@/components/common/Header';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const ProtectedLayout: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const { isAuthenticated, openAuthModal } = useAuth();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      openAuthModal('login');
+    }
+  }, [isAuthenticated, openAuthModal]);
+
+  if (!isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300">

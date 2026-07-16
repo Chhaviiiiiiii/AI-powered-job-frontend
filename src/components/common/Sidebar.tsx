@@ -8,8 +8,10 @@ import {
   User, 
   ChevronLeft, 
   ChevronRight,
-  TrendingUp
+  TrendingUp,
+  LogOut
 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -17,6 +19,8 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed }) => {
+  const { user, logout } = useAuth();
+  
   const menuItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
     { name: 'Job Search', icon: Briefcase, path: '/jobs' },
@@ -24,6 +28,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
     { name: 'Analytics', icon: TrendingUp, path: '/analytics' },
     { name: 'Profile Setup', icon: User, path: '/profile/setup' },
   ];
+
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map((part) => part[0])
+      .slice(0, 2)
+      .join('')
+      .toUpperCase();
+  };
 
   return (
     <aside 
@@ -59,7 +72,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
             className={({ isActive }) => `flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-200 group
               ${isActive 
                 ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/20' 
-                : 'text-slate-655 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-200'}`}
+                : 'text-slate-600 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-200'}`}
           >
             <item.icon className="w-5 h-5 flex-shrink-0" />
             {!isCollapsed && <span className="transition-opacity duration-200">{item.name}</span>}
@@ -74,15 +87,30 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, setIsCollapsed })
 
       {/* Footer / Profile Mini */}
       <div className="p-4 border-t border-slate-200 dark:border-slate-800">
-        <div className="flex items-center gap-3 overflow-hidden">
-          <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center font-bold text-slate-700 dark:text-slate-350 flex-shrink-0">
-            JD
+        <div className="flex items-center justify-between overflow-hidden gap-2">
+          <div className="flex items-center gap-3 overflow-hidden">
+            <div className="w-10 h-10 rounded-full bg-primary-500/10 dark:bg-primary-500/20 flex items-center justify-center font-bold text-primary-600 dark:text-primary-400 flex-shrink-0 text-sm">
+              {user ? getInitials(user.name) : 'JD'}
+            </div>
+            {!isCollapsed && (
+              <div className="flex flex-col overflow-hidden">
+                <span className="text-sm font-bold text-slate-800 dark:text-slate-200 truncate">
+                  {user?.name || 'John Doe'}
+                </span>
+                <span className="text-xs text-slate-400 dark:text-slate-500 truncate">
+                  {user?.email || 'john.doe@gmail.com'}
+                </span>
+              </div>
+            )}
           </div>
           {!isCollapsed && (
-            <div className="flex flex-col overflow-hidden">
-              <span className="text-sm font-bold text-slate-800 dark:text-slate-200 truncate">John Doe</span>
-              <span className="text-xs text-slate-400 dark:text-slate-500 truncate">john.doe@gmail.com</span>
-            </div>
+            <button
+              onClick={logout}
+              className="p-2 rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all duration-205"
+              title="Log Out"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
           )}
         </div>
       </div>

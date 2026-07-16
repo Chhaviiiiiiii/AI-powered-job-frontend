@@ -1,6 +1,7 @@
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MuiThemeProvider } from '@/contexts/MuiThemeProvider';
+import { AuthProvider } from '@/contexts/AuthContext';
 import { AppRoutes } from '@/routes';
 
 const queryClient = new QueryClient({
@@ -17,7 +18,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <MuiThemeProvider>
         <BrowserRouter>
-          <AppRoutes />
+          <AuthProvider>
+            <AppRoutes />
+          </AuthProvider>
         </BrowserRouter>
       </MuiThemeProvider>
     </QueryClientProvider>

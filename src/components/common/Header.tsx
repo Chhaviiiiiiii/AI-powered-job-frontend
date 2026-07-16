@@ -1,6 +1,7 @@
 import React from 'react';
-import { Sun, Moon, Bell, Search, Menu } from 'lucide-react';
+import { Sun, Moon, Bell, Search, Menu, LogOut } from 'lucide-react';
 import { useThemeStore } from '@/store/themeStore';
+import { useAuth } from '@/contexts/AuthContext';
 import { Avatar } from './Avatar';
 
 interface HeaderProps {
@@ -10,6 +11,7 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ onMenuToggle, title = 'Dashboard' }) => {
   const { theme, toggleTheme } = useThemeStore();
+  const { user, logout } = useAuth();
 
   return (
     <header className="sticky top-0 z-30 h-16 w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 transition-colors duration-300">
@@ -38,24 +40,34 @@ export const Header: React.FC<HeaderProps> = ({ onMenuToggle, title = 'Dashboard
         />
       </div>
 
-      {/* Right actions: theme, notifications, avatar */}
+      {/* Right actions: theme, notifications, avatar, logout */}
       <div className="flex items-center gap-4">
         <button
           onClick={toggleTheme}
-          className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-655 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+          className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
           aria-label="Toggle Theme"
         >
           {theme === 'dark' ? <Sun className="w-4.5 h-4.5" /> : <Moon className="w-4.5 h-4.5" />}
         </button>
 
-        <button className="relative p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-655 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+        <button className="relative p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
           <Bell className="w-4.5 h-4.5" />
-          <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-555 bg-rose-500" />
+          <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-500" />
         </button>
 
         <div className="h-8 w-px bg-slate-200 dark:bg-slate-800" />
 
-        <Avatar name="John Doe" status="online" size="sm" />
+        <div className="flex items-center gap-3">
+          <Avatar name={user?.name || 'John Doe'} status="online" size="sm" />
+          
+          <button
+            onClick={logout}
+            className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 hover:border-red-200 dark:hover:border-red-900/30 transition-all duration-200"
+            title="Log Out"
+          >
+            <LogOut className="w-4.5 h-4.5" />
+          </button>
+        </div>
       </div>
     </header>
   );

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, Sun, Moon, Sparkles } from 'lucide-react';
+import { Menu, X, Sun, Moon, Sparkles, LayoutDashboard } from 'lucide-react';
 import { useThemeStore } from '@/store/themeStore';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from './Button';
 import { Container } from './Container';
 
 export const Navbar: React.FC = () => {
   const { theme, toggleTheme } = useThemeStore();
+  const { isAuthenticated, openAuthModal } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -49,12 +51,25 @@ export const Navbar: React.FC = () => {
             >
               {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
-            <Button variant="outline" size="sm" onClick={() => navigate('/profile/setup')}>
-              Sign In
-            </Button>
-            <Button variant="primary" size="sm" onClick={() => navigate('/profile/setup')}>
-              Get Started
-            </Button>
+            {isAuthenticated ? (
+              <Button 
+                variant="primary" 
+                size="sm" 
+                onClick={() => navigate('/dashboard')}
+                leftIcon={<LayoutDashboard className="w-4 h-4" />}
+              >
+                Go to Dashboard
+              </Button>
+            ) : (
+              <>
+                <Button variant="outline" size="sm" onClick={() => openAuthModal('login')}>
+                  Sign In
+                </Button>
+                <Button variant="primary" size="sm" onClick={() => openAuthModal('signup')}>
+                  Get Started
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -108,12 +123,25 @@ export const Navbar: React.FC = () => {
           </a>
           <div className="h-px bg-slate-100 dark:bg-slate-850 my-1" />
           <div className="flex flex-col gap-2">
-            <Button variant="outline" className="w-full" onClick={() => { setIsOpen(false); navigate('/profile/setup'); }}>
-              Sign In
-            </Button>
-            <Button variant="primary" className="w-full" onClick={() => { setIsOpen(false); navigate('/profile/setup'); }}>
-              Get Started
-            </Button>
+            {isAuthenticated ? (
+              <Button 
+                variant="primary" 
+                className="w-full" 
+                onClick={() => { setIsOpen(false); navigate('/dashboard'); }}
+                leftIcon={<LayoutDashboard className="w-4 h-4" />}
+              >
+                Go to Dashboard
+              </Button>
+            ) : (
+              <>
+                <Button variant="outline" className="w-full" onClick={() => { setIsOpen(false); openAuthModal('login'); }}>
+                  Sign In
+                </Button>
+                <Button variant="primary" className="w-full" onClick={() => { setIsOpen(false); openAuthModal('signup'); }}>
+                  Get Started
+                </Button>
+              </>
+            )}
           </div>
         </div>
       )}
